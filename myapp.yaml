@@ -1,0 +1,106 @@
+# Database settings.
+database:
+
+  # the name of your JDBC driver
+  driverClass: org.apache.derby.jdbc.EmbeddedDriver
+
+  # the username
+  user: app
+
+  # the password
+  password: derby
+
+  # the JDBC URL
+  url: jdbc:derby:derbyDB;create=true
+
+ # any properties specific to your JDBC driver:
+  properties:
+    charSet: UTF-8
+
+ # the maximum amount of time to wait on an empty pool before throwing an exception
+  maxWaitForConnection: 1s
+
+ # the SQL query to run when validating a connection's liveness. Get the validation queries from here:
+   # http://stackoverflow.com/questions/10684244/dbcp-validationquery-for-different-databases
+  validationQuery: "/* MyApplication Health Check */ values 1"
+
+ # the minimum number of connections to keep open
+  minSize: 8
+
+ # the maximum number of connections to keep open
+  maxSize: 32
+
+ # whether or not idle connections should be validated
+  checkConnectionWhileIdle: false
+
+ # the amount of time to sleep between runs of the idle connection validation, abandoned cleaner and idle pool resizing
+  evictionInterval: 10s
+
+ # the minimum amount of time an connection must sit idle in the pool before it is eligible for eviction
+  minIdleTime: 1 minute
+
+# use the simple server factory if you only want to run on a single port
+#server:
+#  type: simple
+#  connector:
+#    type: http
+#    port: 8080
+
+server:
+#  softNofileLimit: 1000
+#  hardNofileLimit: 1000
+  applicationConnectors:
+    - type: http
+      port: 8080
+
+#  Uncomment the following if you want https support
+#    - type: https
+#      port: 8443
+#      keyStorePath: example.keystore
+#      keyStorePassword: example
+#      validateCerts: false
+
+# this requires the npn-boot library on the JVM's boot classpath
+#    - type: spdy3
+#      port: 8445
+#      keyStorePath: example.keystore
+#      keyStorePassword: example
+#      validateCerts: false
+  adminConnectors:
+    - type: http
+      port: 8081
+
+# Uncomment the following if you want to enable https support for admin work
+#    - type: https
+#      port: 8444
+#      keyStorePath: example.keystore
+#      keyStorePassword: example
+#      validateCerts: false
+
+logging:
+
+  # Permit DEBUG, INFO, WARN and ERROR messages to be logged by appenders.
+  level: DEBUG
+
+  appenders:
+    # Log INFO to stderr
+    - type: console
+      threshold: INFO
+      target: stderr
+      logFormat: "%-5level [%thread][%logger{0}]: %message%n"
+
+    # Log info, warnings and errors to our apps' main log.
+    # Rolled over daily and retained for 5 days.
+    - type: file
+      threshold: INFO
+      currentLogFilename: ./logs/example.log
+      archivedLogFilenamePattern: ./logs/myapp-%d.log.gz
+      archivedFileCount: 5
+
+    # Log debug messages, info, warnings and errors to our apps' debug log.
+    # Rolled over hourly and retained for 6 hours
+    - type: file
+      threshold: DEBUG
+      currentLogFilename: ./logs/debug.log
+      archivedLogFilenamePattern: ./logs/debug-%d{yyyy-MM-dd-hh}.log.gz
+      archivedFileCount: 6
